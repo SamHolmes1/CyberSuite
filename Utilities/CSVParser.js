@@ -1,43 +1,45 @@
 const fs = require("fs");
 
-function main () {
+function main() {
   const argv = process.argv;
   const argc = argv.length;
-  
-  if(!validateArgs(argc)){
+
+  if (!validateArgs(argc)) {
     return;
   }
 
   const csvData = fs.readFileSync(argv[2]);
-  
+
   const parsedData = csvParser(csvData);
 
-  fs.writeFileSync("outputCSV.json", JSON.stringify(parsedData, null, 4), function(err) {
-    if(err){
-      console.log(err)
-    }
-  })
+  fs.writeFileSync(
+    "outputCSV.json",
+    JSON.stringify(parsedData, null, 4),
+    function (err) {
+      if (err) {
+        console.log(err);
+      }
+    },
+  );
 }
 
-function validateArgs(argc){
-  if(argc !== 3){
-    console.log(
-      "usage: <path to csv file>\nExample: CSVParser data.csv"
-    );
+function validateArgs(argc) {
+  if (argc !== 3) {
+    console.log("usage: <path to csv file>\nExample: CSVParser data.csv");
     return false;
-  }else{
+  } else {
     return true;
   }
 }
 
-function csvParser(csvString){
-    //Just incase we recieve a buffer instead of a string
+function csvParser(csvString) {
+  //Just incase we recieve a buffer instead of a string
   csvString = csvString.toString();
 
-  if(csvString.length === 0){
+  if (csvString.length === 0) {
     return [];
   }
- 
+
   // Get all the lines of the file
   const lines = csvString.split("\n");
   // Get the headers for the data
@@ -46,15 +48,15 @@ function csvParser(csvString){
   const data = [];
 
   //split the data up by line, seperated by commas
-  for(let i = 1; i < lines.length; i++){
+  for (let i = 1; i < lines.length; i++) {
     data.push(lines[i].split(","));
   }
 
   const returnArray = { data: [] };
 
-  for(let x = 0; x < data.length - 1; x++){
+  for (let x = 0; x < data.length - 1; x++) {
     const tempObject = {};
-    for(let z = 0; z < data[x].length; z++){
+    for (let z = 0; z < data[x].length; z++) {
       tempObject[headers[z]] = data[x][z];
     }
     returnArray.data.push(tempObject);
